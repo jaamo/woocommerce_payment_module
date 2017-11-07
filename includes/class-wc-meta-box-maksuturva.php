@@ -62,7 +62,7 @@ class WC_Meta_Box_Maksuturva {
 			$gateway  = $args['args']['gateway'];
 			self::$td = $gateway->td;
 			$order    = wc_get_order( $post );
-			$payment  = new WC_Payment_Maksuturva( $order->id );
+			$payment  = new WC_Payment_Maksuturva( $order->get_id() );
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
 			// If the payment was not found, it probably means that the order was not paid with Maksuturva.
 			return;
