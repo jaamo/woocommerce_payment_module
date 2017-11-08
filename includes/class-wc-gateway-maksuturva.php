@@ -473,8 +473,8 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		return array(
 			'result'   => 'success',
-			'redirect' => add_query_arg( 'order-pay', $order->id,
-			add_query_arg( 'key', $order->order_key, $order->get_checkout_order_received_url() ) ),
+			'redirect' => add_query_arg( 'order-pay', $order->get_id(),
+			add_query_arg( 'key', $order->get_order_key(), $order->get_checkout_order_received_url() ) ),
 		);
 	}
 
@@ -496,7 +496,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 
 		// Create the payment for Maksuturva.
 		WC_Payment_Maksuturva::create( array(
-			'order_id'      => $order->id,
+			'order_id'      => $order->get_id(),
 			'payment_id'    => $data['pmt_id'],
 			'data_sent'     => $data,
 			'data_received' => array(),
@@ -538,7 +538,7 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 		}
 
 		try {
-			$payment = new WC_Payment_Maksuturva( $order->id );
+			$payment = new WC_Payment_Maksuturva( $order->get_id() );
 		} catch ( WC_Gateway_Maksuturva_Exception $e ) {
 			_log( (string) $e );
 			$this->add_notice( __( 'Could not process order.', $this->td ), 'error' );
@@ -564,19 +564,19 @@ class WC_Gateway_Maksuturva extends WC_Payment_Gateway {
 			case WC_Payment_Maksuturva::STATUS_ERROR:
 				$this->order_fail( $order, $payment );
 				$this->add_notice( __( 'Error from Maksuturva received.', $this->td ), 'error' );
-				wp_redirect( add_query_arg( 'key', $order->order_key, $this->get_return_url( $order ) ) );
+				wp_redirect( add_query_arg( 'key', $order->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_DELAYED:
 				$this->order_delay( $order, $payment );
 				$this->add_notice( __( 'Payment delayed by Maksuturva.', $this->td ), 'notice' );
-				wp_redirect( add_query_arg( 'key', $order->order_key, $this->get_return_url( $order ) ) );
+				wp_redirect( add_query_arg( 'key', $order->get_order_key(), $this->get_return_url( $order ) ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_CANCELLED:
 				$this->order_cancel( $order, $payment );
 				$this->add_notice( __( 'Cancellation from Maksuturva received.', $this->td ), 'notice' );
-				wp_redirect( add_query_arg( 'key', $order->order_key, $order->get_cancel_order_url() ) );
+				wp_redirect( add_query_arg( 'key', $order->get_order_key(), $order->get_cancel_order_url() ) );
 				break;
 
 			case WC_Payment_Maksuturva::STATUS_COMPLETED:
